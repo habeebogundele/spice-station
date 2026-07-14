@@ -1,11 +1,13 @@
 import { connectToDatabase } from './mongodb';
 import { OrderModel, type OrderDocument } from '@/models/Order';
 import { ProductModel, type ProductDocument } from '@/models/Product';
+import { PRODUCTS } from '@/constants';
 import type {
   CustomerInfo,
   Order,
   OrderItem,
   OrderStatus,
+  Product,
   TrackingResult,
   TrackingStep,
 } from '@/types';
@@ -15,6 +17,12 @@ export interface CreateOrderInput {
   customer: CustomerInfo;
   note?: string;
 }
+
+type CatalogProduct = {
+  slug: string;
+  name: string;
+  variants: { id: string; size: string; price: number }[];
+};
 
 function serializeOrder(doc: OrderDocument): Order {
   return {
@@ -66,7 +74,34 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
   const products = await ProductModel.find({ slug: { $in: slugs } }).lean<
     ProductDocument[]
   >();
-  const productMap = new Map(products.map((p) => [p.slug, p]));
+  const productMap = new Map<string, CatalogProduct>(
+    products.map((p) => [
+      p.slug,
+      {
+        slug: p.slug,
+        name: p.name,
+        variants: (p.variants ?? []).map((v) => ({
+          id: v.id,
+          size: v.size,
+          price: v.price,
+        })),
+      },
+    ])
+  );
+
+  // Fall back to the built-in catalogue if MongoDB has not been seeded yet.
+  for (const slug of slugs) {
+    if (!productMap.has(slug)) {
+      const fallback = PRODUCTS.find((p: Product) => p.id === slug);
+      if (fallback) {
+        productMap.set(slug, {
+          slug: fallback.id,
+          name: fallback.name,
+          variants: fallback.variants,
+        });
+      }
+    }
+  }
 
   const orderItems: OrderItem[] = [];
   for (const line of input.items) {
@@ -74,7 +109,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
     if (!product) {
       throw new Error(`Product not found: ${line.productId}`);
     }
-    const variant = (product.variants ?? []).find((v) => v.id === line.variantId);
+    const variant = product.variants.find((v) => v.id === line.variantId);
     if (!variant) {
       throw new Error(`Variant not found for ${product.name}: ${line.variantId}`);
     }

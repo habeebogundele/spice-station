@@ -89,10 +89,11 @@ export default function HomeClient({ products }: HomeClientProps) {
             {noProducts && (
               <div className="text-center py-16 bg-brand-off-white rounded-3xl border border-dashed border-brand-purple/20">
                 <p className="text-brand-purple font-serif text-xl italic">
-                  No products available yet.
+                  Products could not be loaded.
                 </p>
-                <p className="text-gray-500 mt-2 text-sm">
-                  Run <code className="font-mono">npm run seed</code> to load the catalogue into MongoDB.
+                <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">
+                  Set a MongoDB Atlas <code className="font-mono">MONGODB_URI</code> in Vercel
+                  Environment Variables, then seed the catalogue.
                 </p>
               </div>
             )}

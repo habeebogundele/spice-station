@@ -1,8 +1,14 @@
-import { connectToDatabase } from './mongodb';
-import { ProductModel, type ProductDocument } from '@/models/Product';
 import type { Product } from '@/types';
+import { PRODUCTS } from '@/constants';
 
-function serializeProduct(doc: ProductDocument): Product {
+function serializeProduct(doc: {
+  slug: string;
+  name: string;
+  description: string;
+  category: string;
+  images?: string[];
+  variants?: { id: string; size: string; price: number }[];
+}): Product {
   return {
     id: doc.slug,
     name: doc.name,
@@ -17,14 +23,39 @@ function serializeProduct(doc: ProductDocument): Product {
   };
 }
 
+/**
+ * Load products from MongoDB when available.
+ * Falls back to the built-in catalogue so the storefront never goes blank
+ * if MongoDB is unreachable or unseeded (common on first Vercel deploy).
+ */
 export async function getAllProducts(): Promise<Product[]> {
-  await connectToDatabase();
-  const docs = await ProductModel.find().sort({ createdAt: 1 }).lean<ProductDocument[]>();
-  return docs.map(serializeProduct);
+  try {
+    const { connectToDatabase } = await import('./mongodb');
+    const { ProductModel } = await import('@/models/Product');
+    await connectToDatabase();
+    const docs = await ProductModel.find().sort({ createdAt: 1 }).lean();
+    if (docs.length > 0) {
+      return docs.map((doc) => serializeProduct(doc as Parameters<typeof serializeProduct>[0]));
+    }
+  } catch (error) {
+    console.error('MongoDB product load failed; using built-in catalogue.', error);
+  }
+
+  return PRODUCTS;
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  await connectToDatabase();
-  const doc = await ProductModel.findOne({ slug }).lean<ProductDocument | null>();
-  return doc ? serializeProduct(doc) : null;
+  try {
+    const { connectToDatabase } = await import('./mongodb');
+    const { ProductModel } = await import('@/models/Product');
+    await connectToDatabase();
+    const doc = await ProductModel.findOne({ slug }).lean();
+    if (doc) {
+      return serializeProduct(doc as Parameters<typeof serializeProduct>[0]);
+    }
+  } catch (error) {
+    console.error('MongoDB product lookup failed; checking built-in catalogue.', error);
+  }
+
+  return PRODUCTS.find((p) => p.id === slug) ?? null;
 }

@@ -1,13 +1,5 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error(
-    'Missing MONGODB_URI environment variable. Add it to your .env.local file.'
-  );
-}
-
 /**
  * Cache the connection across hot reloads in development and across
  * serverless function invocations in production to avoid opening a new
@@ -33,12 +25,20 @@ if (!global._mongooseCache) {
 }
 
 export async function connectToDatabase(): Promise<typeof mongoose> {
+  const MONGODB_URI = process.env.MONGODB_URI;
+
+  if (!MONGODB_URI) {
+    throw new Error(
+      'Missing MONGODB_URI. Set it in .env.local (local) or Vercel Environment Variables (production). Use a MongoDB Atlas URI — localhost will not work on Vercel.'
+    );
+  }
+
   if (cached.conn) {
     return cached.conn;
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI as string, {
+    cached.promise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false,
       // Fail fast instead of hanging when the database is unreachable.
       serverSelectionTimeoutMS: 10000,
