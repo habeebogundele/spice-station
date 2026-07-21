@@ -6,17 +6,17 @@ import { useState, useEffect } from 'react';
 
 const SLIDES = [
   {
-    image: "https://images.unsplash.com/photo-1615485925828-568eb2a66e40?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&q=80&w=1200",
     title: "Nourish Your Soul",
     accent: "Natural & Pure"
   },
   {
-    image: "/smoked_fish.jpg",
+    image: "https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?auto=format&fit=crop&q=80&w=1200",
     title: "The Perfect Umami",
     accent: "Naturally Smoked"
   },
   {
-    image: "/dried_ponmo.jpg",
+    image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&q=80&w=1200",
     title: "Authentic Chews",
     accent: "Traditional Prep"
   }

@@ -12,8 +12,8 @@ export const PRODUCTS: Product[] = [
       'Nourishing and rich, made from natural tigernuts and dates. Carefully processed to retain its nutritional benefits.',
     category: 'Drinks',
     images: [
-      'https://images.unsplash.com/photo-1615485925828-568eb2a66e40?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&q=80&w=800',
     ],
     variants: [
       { id: 'tn-35cl', size: '35cl', price: 1200 },
@@ -28,8 +28,8 @@ export const PRODUCTS: Product[] = [
       'Refreshing hibiscus drink infused with ginger and natural spices. A traditional Nigerian classic.',
     category: 'Drinks',
     images: [
+      'https://images.unsplash.com/photo-1497534547324-0ebb3f052e88?auto=format&fit=crop&q=80&w=800',
       'https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1628191138407-3e813f837330?auto=format&fit=crop&q=80&w=800',
     ],
     variants: [
       { id: 'zb-35cl', size: '35cl', price: 500 },
@@ -44,7 +44,7 @@ export const PRODUCTS: Product[] = [
       'Authentically prepared, chewy, and rich in flavour. The perfect addition to your soups and stews.',
     category: 'Delicacies',
     images: [
-      '/dried_ponmo.jpg',
+      'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&q=80&w=800',
       'https://images.unsplash.com/photo-1606787366850-de6330128bfc?auto=format&fit=crop&q=80&w=800',
     ],
     variants: [
@@ -59,7 +59,7 @@ export const PRODUCTS: Product[] = [
       'Naturally smoked and sun-dried for a deep, authentic umami flavour. Hygienically packed.',
     category: 'Delicacies',
     images: [
-      '/smoked_fish.jpg',
+      'https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?auto=format&fit=crop&q=80&w=800',
       'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&q=80&w=800',
     ],
     variants: [
